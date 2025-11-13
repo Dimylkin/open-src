@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1,
+    "name": "C:",
+    "parent_id": null
+  },
+  {
+    "id": 2,
+    "name": "Documents",
+    "parent_id": 1
+  },
+  {
+    "id": 3,
+    "name": "Program Files",
+    "parent_id": 1
+  },
+  {
+    "id": 4,
+    "name": "Users",
+    "parent_id": 1
+  },
+  {
+    "id": 5,
+    "name": "MyDoc",
+    "parent_id": 2
+  },
+  {
+    "id": 6,
+    "name": "Projects",
+    "parent_id": 2
+  },
+  {
+    "id": 7,
+    "name": "Job",
+    "parent_id": 5
+  },
+  {
+    "id": 8,
+    "name": "Personal",
+    "parent_id": 5
+  },
+  {
+    "id": 9,
+    "name": "notes.txt",
+    "parent_id": 5
+  },
+  {
+    "id": 10,
+    "name": "resume.pdf",
+    "parent_id": 7
+  },
+  {
+    "id": 11,
+    "name": "cover_letter.docx",
+    "parent_id": 7
+  },
+  {
+    "id": 12,
+    "name": "photo.jpg",
+    "parent_id": 8
+  },
+  {
+    "id": 13,
+    "name": "Website",
+    "parent_id": 6
+  },
+  {
+    "id": 14,
+    "name": "index.html",
+    "parent_id": 13
+  },
+  {
+    "id": 15,
+    "name": "style.css",
+    "parent_id": 13
+  },
+  {
+    "id": 16,
+    "name": "Browser",
+    "parent_id": 3
+  },
+  {
+    "id": 17,
+    "name": "browser.exe",
+    "parent_id": 16
+  },
+  {
+    "id": 18,
+    "name": "admin",
+    "parent_id": 4
+  },
+  {
+    "id": 19,
+    "name": "Desktop",
+    "parent_id": 18
+  },
+  {
+    "id": 20,
+    "name": "shortcut.lnk",
+    "parent_id": 19
+  }
+]
