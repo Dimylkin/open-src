@@ -3,9 +3,6 @@
 /**
  * Проверяет, является ли число простым
  * 
- * Простое число — это целое число больше 1,
- * которое делится только на 1 и на само себя
- * 
  * @param int $n Число для проверки
  * @return bool Возвращает true, если число простое, иначе false
  */
@@ -34,12 +31,9 @@ function getOutput(int $n): string
 {
     $answer = isPrime($n);
 
-    if ($answer == true)
-    {
+    if ($answer == true) {
         return "Простое число";
-    }
-    else
-    {
+    } else {
         return "Не простое число";
     }
 }
@@ -47,21 +41,14 @@ function getOutput(int $n): string
 /**
  * Вычисляет n-е число последовательности Фибоначчи
  * 
- * Использует рекурсивный алгоритм.
- * fibonacci(0) = 0, fibonacci(1) = 1
- * 
  * @param int $n Порядковый номер числа в последовательности
  * @return int n-е число Фибоначчи
  */
 function fibonacci(int $n): int
 {
-    if ($n == 1) 
-    {
+    if ($n == 1) {
         return 1;
-    }
-
-    elseif ($n == 0) 
-    {
+    } elseif ($n == 0) {
         return 0;
     }
 
@@ -71,16 +58,12 @@ function fibonacci(int $n): int
 /**
  * Форматирует номер телефона в читаемый вид
  * 
- * Преобразует номер из формата "89123456789"
- * в формат "+7 (912) 345-67-89"
- * 
  * @param string $phone Номер телефона (11 цифр)
  * @return string Отформатированный номер или сообщение об ошибке
  */
 function formatPhone(string $phone): string
 {
-    if (strlen($phone) == 11) 
-    {
+    if (strlen($phone) == 11) {
         $first_three = substr($phone, 1, 3);
         $second_three = substr($phone, 4, 3);
         
@@ -97,20 +80,17 @@ function formatPhone(string $phone): string
 /**
  * Фильтрует массив чисел, оставляя только чётные элементы
  * 
- * Использует array_filter() с анонимной функцией для фильтрации
- * 
  * @param array $numbers Массив целых чисел
  * @return string Строка с чётными числами через запятую или сообщение об отсутствии
  */
-$filter = function(array $numbers): string
-{
-    $array = array_filter($numbers, function($n) {return $n % 2 == 0;});
-    if (strlen(implode(",", $array)) != 0)
-    {
+$filter = function (array $numbers): string {
+    $array = array_filter($numbers, function ($n) {
+        return $n % 2 == 0;
+    });
+    
+    if (strlen(implode(",", $array)) != 0) {
         return implode(",", $array);
-    }
-    else
-    {
+    } else {
         return "Четных чисел нет";
     }
 };
