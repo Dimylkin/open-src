@@ -268,55 +268,104 @@ function highlightNumbers(string $text): string
     return preg_replace('/\d+/', '...', $text);
 }
 
-// Демонстрация вызова функций (закомментировано)
+// Демонстрация вызова функций с входными данными в титуле
 
-echo "=== Задание 1: Heredoc ===" . PHP_EOL;
-echo generateEmailTemplateHeredoc("Дима", "ПК") . PHP_EOL;
+$name = "Дима";
+$product = "Компьютер";
+// Задание 1
+echo "=== Задание 1: Heredoc. Входные данные: name = $name, product = $product ===" . PHP_EOL;
+echo "<br>\n";
+echo generateEmailTemplateHeredoc($name, $product) . PHP_EOL;
 echo "<br>\n";
 
-echo "=== Задание 2: Первый и последний символ ===" . PHP_EOL;
+$nameNowdoc = "Евгений";
+$productNowdoc = "Смартфон";
+echo "=== Задание 1 (nowdoc): Входные данные: name = $nameNowdoc, product = $productNowdoc ===" . PHP_EOL;
+echo "<br>\n";
+echo generateEmailTemplateNowdoc($nameNowdoc, $productNowdoc) . PHP_EOL;
+echo "<br>\n";
+
+// Задание 2
 $word = "Слово";
+echo "=== Задание 2: Первый и последний символ. Входные данные: word = $word ===" . PHP_EOL;
+echo "<br>\n";
 $chars = getFirstAndLastChar($word);
-echo "При слове {$word}. Первый символ: {$chars['first']}, а последний {$chars['last']}" . PHP_EOL;
+echo "При слове \"$word\". Первый символ: {$chars['first']}, а последний: {$chars['last']}." . PHP_EOL;
 echo "<br>\n";
 
-echo "=== Задание 3: Полное имя ===" . PHP_EOL;
-echo buildFullName("Дима", "Дымылкин") . PHP_EOL;
+// Задание 3
+$first = "Дима";
+$last = "Суставов";
+echo "=== Задание 3: Полное имя. Входные данные: first = $first, last = $last ===" . PHP_EOL;
+echo "<br>\n";
+echo buildFullName($first, $last) . PHP_EOL;
 echo "<br>\n";
 
-echo "=== Задание 4: Title Case ===" . PHP_EOL;
-echo toTitleCase("привет, мир! это тест.") . PHP_EOL;
+// Задание 4
+$phrase = "привет, мир! это тест.";
+echo "=== Задание 4: Title Case. Входные данные: phrase = \"$phrase\" ===" . PHP_EOL;
+echo "<br>\n";
+echo toTitleCase($phrase) . PHP_EOL;
 echo "<br>\n";
 
-echo "=== Задание 5: Имя файла ===" . PHP_EOL;
-echo extractFileName("/var/www/index.php") . PHP_EOL;
-echo extractFileName("index.php") . PHP_EOL;
+// Задание 5
+$path1 = "/var/www/index.php";
+$path2 = "index.php";
+echo "=== Задание 5: Имя файла. Входные данные: path = $path1 ===" . PHP_EOL;
+echo "<br>\n";
+echo extractFileName($path1) . PHP_EOL;
+echo "<br>\n";
+echo "=== Задание 5: Имя файла. Входные данные: path = $path2 ===" . PHP_EOL;
+echo "<br>\n";
+echo extractFileName($path2) . PHP_EOL;
 echo "<br>\n";
 
-echo "=== Задание 6: CSV теги ===" . PHP_EOL;
+// Задание 6
 $tags = ["php", "regex", "web"];
+echo "=== Задание 6: CSV теги. Входные данные: tags = [" . implode(", ", $tags) . "] ===" . PHP_EOL;
+echo "<br>\n";
 $csv = tagListToCSV($tags);
-echo $csv . PHP_EOL;
+echo "CSV: $csv" . PHP_EOL;
+echo "Теги: ";
 print_r(csvToTagList($csv));
 echo "<br>\n";
 
-echo "=== Задание 7: Безопасный вывод ===" . PHP_EOL;
-echo safeEcho("<script>alert('XSS')</script>") . PHP_EOL;
+// Задание 7
+$userInput = "<script>alert('XSS')</script>";
+echo "=== Задание 7: Безопасный вывод. Входные данные: userInput = $userInput ===" . PHP_EOL;
+echo "<br>\n";
+echo safeEcho($userInput) . PHP_EOL;
 echo "<br>\n";
 
-echo "=== Задание 8: URL ===" . PHP_EOL;
-echo buildSearchUrl("привет мир") . PHP_EOL;
+// Задание 8
+$query = "привет мир";
+echo "=== Задание 8: URL. Входные данные: query = \"$query\" ===" . PHP_EOL;
+echo "<br>\n";
+echo buildSearchUrl($query) . PHP_EOL;
 echo "<br>\n";
 
-echo "=== Задание 9: Валидация пароля ===" . PHP_EOL;
-var_dump(validatePassword("Password1"));
-var_dump(validatePassword("weak"));
+// Задание 9
+$passwordStrong = "Password1";
+$passwordWeak = "weak";
+echo "=== Задание 9: Валидация пароля. Входные данные: pass = \"$passwordStrong\" ===" . PHP_EOL;
+echo "<br>\n";
+var_dump(validatePassword($passwordStrong));
+echo "<br>\n";
+echo "=== Задание 9: Валидация пароля. Входные данные: pass = \"$passwordWeak\" ===" . PHP_EOL;
+echo "<br>\n";
+var_dump(validatePassword($passwordWeak));
 echo "<br>\n";
 
-echo "=== Задание 10: Email ===" . PHP_EOL;
-print_r(extractEmails("Контакты: test@example.com и admin@site.org"));
+// Задание 10
+$emailText = "Контакты: test@example.com и admin@site.org";
+echo "=== Задание 10: Email. Входные данные: text = \"$emailText\" ===" . PHP_EOL;
+echo "<br>\n";
+print_r(extractEmails($emailText));
 echo "<br>\n";
 
-echo "=== Задание 11: Маскировка чисел ===" . PHP_EOL;
-echo highlightNumbers("Мой номер 123 и код 456") . PHP_EOL;
+// Задание 11
+$numText = "Мой номер 123 и код 456";
+echo "=== Задание 11: Маскировка чисел. Входные данные: text = \"$numText\" ===" . PHP_EOL;
+echo "<br>\n";
+echo highlightNumbers($numText) . PHP_EOL;
 echo "<br>\n";
