@@ -50,9 +50,9 @@ HEREDOC;
  * @param string $product Название продукта (не используется в nowdoc)
  * @return string HTML-шаблон письма
  */
-function generateEmailTemplateNowdoc(string $name, string $product): string
+function generateEmailTemplateNowdoc(): string
 {
-    return <<<'HEREDOC'
+    return <<<'NOWDOC'
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -64,7 +64,7 @@ function generateEmailTemplateNowdoc(string $name, string $product): string
     <p>Благодарим вас за заказ!</p>
 </body>
 </html>
-HEREDOC;
+NOWDOC;
 }
 
 /**
