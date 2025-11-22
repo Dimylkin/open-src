@@ -1,68 +1,87 @@
 <?php
 
-
 declare(strict_types=1);
 
+// ============================================================================
+// Инициализация сессии в начале файла
+// ============================================================================
 
-/*
-Задание 1. Анализ HTTP-запроса
-На основе раздела «2. Структура HTTP-запроса и ответа».
+/**
+ * Инициализация сессии с защитой от повторного вызова
+ *
+ * @return void
+ */
+function initSession(): void
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+}
 
-Напишите функцию dumpRequestInfo(): void, которая выводит в формате HTML:
+initSession();
 
-Метод запроса ($_SERVER['REQUEST_METHOD'])
-URI ($_SERVER['REQUEST_URI'])
-Все параметры из $_GET и $_POST (если есть)
-Информацию о браузере ($_SERVER['HTTP_USER_AGENT'])
-Данные должны быть экранированы.
-*/
+// ============================================================================
+// Задание 1: Анализ HTTP-запроса
+// ============================================================================
+
+/**
+ * Вывод информации о HTTP-запросе в формате HTML
+ *
+ * @return void
+ */
 function dumpRequestInfo(): void
 {
     $method = htmlspecialchars($_SERVER['REQUEST_METHOD'] ?? 'Unknown', ENT_QUOTES, 'UTF-8');
     $uri = htmlspecialchars($_SERVER['REQUEST_URI'] ?? '/', ENT_QUOTES, 'UTF-8');
-    $protocol = htmlspecialchars($_SERVER['SERVER_PROTOCOL'] ?? 'HTTP/1.1', ENT_QUOTES, 'UTF-8');
-    $host = htmlspecialchars($_SERVER['HTTP_HOST'] ?? 'Unknown', ENT_QUOTES, 'UTF-8');
     $userAgent = htmlspecialchars($_SERVER['HTTP_USER_AGENT'] ?? 'Unknown', ENT_QUOTES, 'UTF-8');
     
-    echo "<!DOCTYPE html><html lang='ru'><head><meta charset='UTF-8'><title>{$method}</title></head><body>";
-    echo "<p>{$method} {$uri} {$protocol}</p>";
-    echo "<p>Host: {$host}</p>";
-    echo "<p>User-Agent: {$userAgent}</p>";
+    echo "<!DOCTYPE html>\n";
+    echo "<html lang='ru'>\n";
+    echo "<head><meta charset='UTF-8'><title>HTTP Request Info</title></head>\n";
+    echo "<body>\n";
+    echo "<h2>Информация о запросе</h2>\n";
+    echo "<p><strong>Метод:</strong> {$method}</p>\n";
+    echo "<p><strong>URI:</strong> {$uri}</p>\n";
+    echo "<p><strong>User-Agent:</strong> {$userAgent}</p>\n";
     
-    echo "<p>GET:</p>";
-    if ($_GET) {
+    echo "<h3>GET параметры:</h3>\n";
+    if (!empty($_GET)) {
+        echo "<ul>\n";
         foreach ($_GET as $k => $v) {
-            echo htmlspecialchars($k, ENT_QUOTES, 'UTF-8') . ': ' . htmlspecialchars($v, ENT_QUOTES, 'UTF-8') . '<br>';
+            $key = htmlspecialchars((string)$k, ENT_QUOTES, 'UTF-8');
+            $value = htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
+            echo "<li>{$key}: {$value}</li>\n";
         }
+        echo "</ul>\n";
     } else {
-        echo "Нет параметров<br>";
+        echo "<p>Нет параметров</p>\n";
     }
     
-    echo "<p>POST:</p>";
-    if ($_POST) {
+    echo "<h3>POST параметры:</h3>\n";
+    if (!empty($_POST)) {
+        echo "<ul>\n";
         foreach ($_POST as $k => $v) {
-            echo htmlspecialchars($k, ENT_QUOTES, 'UTF-8') . ': ' . htmlspecialchars($v, ENT_QUOTES, 'UTF-8') . '<br>';
+            $key = htmlspecialchars((string)$k, ENT_QUOTES, 'UTF-8');
+            $value = htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
+            echo "<li>{$key}: {$value}</li>\n";
         }
+        echo "</ul>\n";
     } else {
-        echo "Нет параметров<br>";
+        echo "<p>Нет параметров</p>\n";
     }
     
-    echo "</body></html>";
+    echo "</body>\n</html>";
 }
-// dumpRequestInfo();
 
+// ============================================================================
+// Задание 2: Работа с суперглобальными массивами
+// ============================================================================
 
-/*
-Задание 2. Работа с суперглобальными массивами
-На основе раздела «3. Глобальные суперглобальные массивы PHP».
-
-Реализуйте функцию getRequestData(): array, которая возвращает ассоциативный массив с полями:
-
-'method' — метод запроса
-'get' — копия $_GET
-'post' — копия $_POST
-'server_info' — массив с HTTP_HOST, SERVER_NAME, HTTPS (если задано)
-*/
+/**
+ * Получение данных запроса
+ *
+ * @return array Ассоциативный массив с данными запроса
+ */
 function getRequestData(): array
 {
     return [
@@ -76,20 +95,16 @@ function getRequestData(): array
         ]
     ];
 }
-// print_r(getRequestData());
 
-/*
-Задание 3. Обработка GET- и POST-форм
-На основе раздела «4. Обработка HTML-форм».
+// ============================================================================
+// Задание 3: Обработка GET- и POST-форм
+// ============================================================================
 
-Создайте две простые формы на одной странице:
-
-GET-форма с полем «поиск»
-POST-форма с полем «сообщение»
-Реализуйте обработку: если данные есть — выведите их (экран). Иначе — покажите формы.
-
-Используйте sticky-формы — сохраняйте введённые значения при ошибке (здесь ошибки нет, но поведение должно быть).
-*/
+/**
+ * Обработка и вывод GET-формы поиска
+ *
+ * @return void
+ */
 function processSearchForm(): void
 {
     $search = $_GET['search'] ?? '';
@@ -109,11 +124,16 @@ function processSearchForm(): void
     echo '</form>';
 }
 
+/**
+ * Обработка и вывод POST-формы сообщений
+ *
+ * @return void
+ */
 function processMessageForm(): void
 {
     $message = $_POST['message'] ?? '';
     
-    if ($message !== '') {
+    if ($message !== '' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         echo '<div style="background: lightblue; padding: 10px; margin: 10px 0;">';
         echo '<strong>Получено сообщение:</strong> ' . htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
         echo '</div>';
@@ -127,19 +147,19 @@ function processMessageForm(): void
     echo '<button type="submit">Отправить</button>';
     echo '</form>';
 }
-// processSearchForm();
-// processMessageForm();
 
-/*
-Задание 4. Cookies: установка и чтение
-На основе раздела «5. Cookies».
+// ============================================================================
+// Задание 4: Cookies: установка и чтение
+// ============================================================================
 
-Реализуйте функцию setThemeCookie(string $theme): void, которая устанавливает cookie theme со сроком 1 час, флагами secure, httponly, samesite=Lax.
-
-Реализуйте функцию getTheme(): string, которая возвращает значение cookie или 'light' по умолчанию.
-*/
-
-function setThemeCookie(string $theme): void {
+/**
+ * Установка cookie с темой оформления
+ *
+ * @param string $theme Название темы
+ * @return void
+ */
+function setThemeCookie(string $theme): void
+{
     setcookie(
         'theme',
         $theme,
@@ -154,117 +174,174 @@ function setThemeCookie(string $theme): void {
     );
 }
 
-function getTheme(): string {
+/**
+ * Получение текущей темы из cookie
+ *
+ * @return string Название темы
+ */
+function getTheme(): string
+{
     return $_COOKIE['theme'] ?? 'light';
 }
-// setThemeCookie('dark');
-// $currentTheme = getTheme();
-// echo "Текущая тема: " . htmlspecialchars($currentTheme, ENT_QUOTES, 'UTF-8');
 
-/*
-Задание 5. Сессии: инициализация и использование
-На основе раздела «6. Сессии».
+// ============================================================================
+// Задание 5: Сессии: инициализация и использование
+// ============================================================================
 
-Напишите функцию initSession(): void, которая вызывает session_start() только один раз (защита от повторного вызова).
-
-Создайте класс SessionBag с методами:
-
-set(string $key, mixed $value): void
-get(string $key, mixed $default = null): mixed
-has(string $key): bool
-remove(string $key): void
-Все операции должны работать с $_SESSION.
-*/
-
-function initSession(): void
+/**
+ * Класс для работы с данными сессии
+ */
+class SessionBag
 {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
-}
-
-class SessionBag {
+    /**
+     * Установить значение в сессию
+     *
+     * @param string $key Ключ
+     * @param mixed $value Значение
+     * @return void
+     */
     public function set(string $key, mixed $value): void
     {
         $_SESSION[$key] = $value;
     }
 
+    /**
+     * Получить значение из сессии
+     *
+     * @param string $key Ключ
+     * @param mixed $default Значение по умолчанию
+     * @return mixed Значение из сессии или значение по умолчанию
+     */
     public function get(string $key, mixed $default = null): mixed
     {
         return $_SESSION[$key] ?? $default;
     }
 
+    /**
+     * Проверить существование ключа в сессии
+     *
+     * @param string $key Ключ
+     * @return bool True если ключ существует
+     */
     public function has(string $key): bool
     {
         return isset($_SESSION[$key]);
     }
 
-    function remove(string $key): void {
+    /**
+     * Удалить значение из сессии
+     *
+     * @param string $key Ключ
+     * @return void
+     */
+    public function remove(string $key): void
+    {
         unset($_SESSION[$key]);
     }
 }
-// initSession();
-// initSession();
- 
-// $session = new SessionBag();
- 
-// $session->set('username', 'Ivan');
-// $session->set('age', 25);
-// $session->set('theme', 'dark'); 
-// echo $session->get('username');
-// echo $session->get('email', 'not@set.com');
-// if ($session->has('username')) {
-//      echo "Пользователь залогинен: " . $session->get('username');
-// } 
-// $session->remove('age');
- 
-// var_dump($session->has('age'));
 
-/*
-Задание 6. Безопасная валидация входных данных
-На основе раздела «7.1. Валидация и экранирование».
+// ============================================================================
+// Задание 6: Безопасная валидация входных данных
+// ============================================================================
 
-Реализуйте функцию validateEmail(string $email): bool, использующую filter_var().
-
-Реализуйте функцию safeOutput(string $text): string, возвращающую htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8').
-*/
-
-function validateEmail(string $email): bool {
+/**
+ * Валидация email адреса
+ *
+ * @param string $email Email адрес
+ * @return bool True если email корректен
+ */
+function validateEmail(string $email): bool
+{
     return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
 }
 
-function safeOutput(string $text): string {
+/**
+ * Безопасный вывод текста с экранированием
+ *
+ * @param string $text Текст для вывода
+ * @return string Экранированный текст
+ */
+function safeOutput(string $text): string
+{
     return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
-/*
-Задание 7. Защита от XSS
-На основе раздела «7.2. Защита от атак».
+// ============================================================================
+// Задание 8: Защита от CSRF
+// ============================================================================
 
-Создайте форму «Гостевая книга» с полем comment (POST).
+/**
+ * Генерация CSRF токена
+ *
+ * @return string CSRF токен
+ */
+function generateCsrfToken(): string
+{
+    if (!isset($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    
+    return $_SESSION['csrf_token'];
+}
 
-При отправке:
+/**
+ * Валидация CSRF токена
+ *
+ * @param string $token Токен для проверки
+ * @return bool True если токен корректен
+ */
+function validateCsrfToken(string $token): bool
+{
+    if (!isset($_SESSION['csrf_token'])) {
+        return false;
+    }
+    
+    return hash_equals($_SESSION['csrf_token'], $token);
+}
 
-Сохраняйте комментарий в сессии ($_SESSION['comments'][])
-При выводе — обязательно экранируйте каждый комментарий
-Убедитесь, что ввод не выполняется.
-*/
+// ============================================================================
+// Задание 9: Регенерация ID сессии
+// ============================================================================
 
+/**
+ * Регенерация ID сессии для безопасности
+ *
+ * @return void
+ */
+function rotateSessionId(): void
+{
+    session_regenerate_id(true);
+}
+
+// ============================================================================
+// Задание 7: Защита от XSS (Гостевая книга с CSRF защитой)
+// ============================================================================
+
+/**
+ * Обработка и вывод гостевой книги с CSRF защитой
+ *
+ * @return void
+ */
 function guestForm(): void
 {
-    initSession();
-    
     if (!isset($_SESSION['comments'])) {
         $_SESSION['comments'] = [];
     }
     
-    $message = $_POST['message'] ?? '';
+    $comment = $_POST['comment'] ?? '';
+    $token = $_POST['csrf_token'] ?? '';
     
-    if ($message !== '') {
-        $_SESSION['comments'][] = $message;
-        echo '<div style="background: lightgreen; padding: 10px; margin: 10px 0;">';
-        echo '<strong>Комментарий добавлен!</strong>';
-        echo '</div>';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && $comment !== '') {
+        if (validateCsrfToken($token)) {
+            $_SESSION['comments'][] = $comment;
+            echo '<div style="background: lightgreen; padding: 10px; margin: 10px 0;">';
+            echo '<strong>Комментарий добавлен!</strong>';
+            echo '</div>';
+        } else {
+            echo '<div style="background: lightcoral; padding: 10px; margin: 10px 0;">';
+            echo '<strong>Ошибка: неверный CSRF токен!</strong>';
+            echo '</div>';
+        }
     }
     
     echo '<h2>Гостевая книга</h2>';
@@ -272,8 +349,8 @@ function guestForm(): void
     if (!empty($_SESSION['comments'])) {
         echo '<h3>Комментарии:</h3>';
         echo '<ul>';
-        foreach ($_SESSION['comments'] as $comment) {
-            echo '<li>' . htmlspecialchars($comment, ENT_QUOTES, 'UTF-8') . '</li>';
+        foreach ($_SESSION['comments'] as $savedComment) {
+            echo '<li>' . safeOutput($savedComment) . '</li>';
         }
         echo '</ul>';
     } else {
@@ -283,149 +360,191 @@ function guestForm(): void
     echo '<h3>Добавить комментарий:</h3>';
     echo '<form method="POST">';
     echo '<label>Комментарий: ';
-    echo '<input type="text" name="message" required>';
+    echo '<input type="text" name="comment" required>';
     echo '</label>';
+    echo '<input type="hidden" name="csrf_token" value="' . generateCsrfToken() . '">';
     echo '<button type="submit">Отправить</button>';
     echo '</form>';
 }
 
-/*
-Задание 8. Защита от CSRF
-На основе раздела «7.2. Защита от атак».
+// ============================================================================
+// Задание 10: Корзина товаров на сессиях
+// ============================================================================
 
-Реализуйте функцию generateCsrfToken(): string (через bin2hex(random_bytes(32))).
-
-Реализуйте функцию validateCsrfToken(string $token): bool, использующую hash_equals().
-
-Добавьте CSRF-токен в форму из задания 7 и проверяйте его при отправке.
-*/
-
-function generateCsrfToken(): string
+/**
+ * Класс для работы с корзиной товаров
+ */
+class ShoppingCart
 {
-    initSession();
-    
-    if (!isset($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
-    
-    return $_SESSION['csrf_token'];
-}
-
-
-function validateCsrfToken(string $token): bool
-{
-    initSession();
-    
-    if (!isset($_SESSION['csrf_token'])) {
-        return false;
-    }
-    
-    return hash_equals($_SESSION['csrf_token'], $token);
-}
-
-/*
-Задание 9. Регенерация ID сессии
-На основе раздела «7.2. Защита от атак».
-
-Создайте функцию rotateSessionId(): void, которая вызывает session_regenerate_id(true).
-
-Примените её при «входе» (в имитации авторизации из итогового задания).
-*/
-function rotateSessionId(): void {
-    session_regenerate_id(true);
-}
-
-/*
-Задание 10. Корзина товаров на сессиях
-На основе раздела «8.1. Корзина товаров на сессиях».
-
-Реализуйте класс ShoppingCart с методами:
-
-addItem(array $item): void — $item должен содержать id, name, price
-getItems(): array
-clear(): void
-Все данные храните в $_SESSION['cart'].
-*/
-class ShoppingCart {
-    function initSession(): void {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+    /**
+     * Конструктор класса
+     */
+    public function __construct()
+    {
+        if (!isset($_SESSION['cart'])) {
+            $_SESSION['cart'] = [];
         }
     }
 
-    function addItem(array $item): void {
-        initSession();
+    /**
+     * Добавить товар в корзину
+     *
+     * @param array $item Массив с данными товара (id, name, price)
+     * @return void
+     */
+    public function addItem(array $item): void
+    {
         if (isset($item['id']) && isset($item['name']) && isset($item['price'])) {
             $_SESSION['cart'][] = $item;
         }
     }
 
-    function getItems(): array {
-        initSession();
-        return  $_SESSION['cart'];
+    /**
+     * Получить все товары из корзины
+     *
+     * @return array Массив товаров
+     */
+    public function getItems(): array
+    {
+        return $_SESSION['cart'] ?? [];
     }
 
-    function clear(): void {
-        unset($_SESSION['cart']);
+    /**
+     * Очистить корзину
+     *
+     * @return void
+     */
+    public function clear(): void
+    {
+        $_SESSION['cart'] = [];
     }
 }
 
-/*
-Задание 11. Итоговое домашнее задание
-Реализуйте полноценный сценарий авторизации:
+// ============================================================================
+// Задание 11: Итоговое домашнее задание (Авторизация)
+// ============================================================================
 
-Форма входа с полями email и password (POST).
-Валидация email через filter_var().
-Имитация проверки пароля: допустим, правильный пароль — "secret".
-При успешном входе:
-Вызовите rotateSessionId()
-Сохраните email и user_id (например, 123) в сессию
-На той же странице:
-Если пользователь авторизован — покажите «Здравствуйте, {email}» и кнопку «Выход»
-Иначе — покажите форму входа
-Кнопка «Выход» должна вызывать session_destroy() и перенаправлять на ту же страницу.
-Все выводы — через safeOutput().
-*/
-
-class Auth {
-    function authForm(): void {
+/**
+ * Класс для работы с авторизацией пользователей
+ */
+class Auth
+{
+    /**
+     * Обработка формы авторизации
+     * Выводит форму входа или приветствие авторизованного пользователя
+     *
+     * @return void
+     */
+    function authForm(): void
+    {        
+        if (isset($_SESSION['email']) && isset($_SESSION['user_id'])) {
+            $this->welcomeForm($_SESSION['email']);
+            return;
+        }
+        
+        if (isset($_POST['exit'])) {
+            session_destroy();
+            header('Location: ' . $_SERVER['PHP_SELF']);
+            exit();
+        }
+        
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
         $secret = "secret";
+        $error = '';
         
-        if (validateEmail($email) && $password == $secret) {
-            rotateSessionId();
-            $_SESSION['email'] = $email;
-            $_SESSION['user_id'] = "123";
-            echo '<div style="background: lightblue; padding: 10px; margin: 10px 0;">';
-            wellcomeForm();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $email !== '' && $password !== '') {
+            if (validateEmail($email) && $password === $secret) {
+                rotateSessionId();
+                $_SESSION['email'] = $email;
+                $_SESSION['user_id'] = "123";
+                header('Location: ' . $_SERVER['PHP_SELF']);
+                exit();
+            } else {
+                $error = 'Неверный email или пароль';
+            }
+        }
+        
+        // Вывод формы входа
+        if ($error !== '') {
+            echo '<div style="background: lightcoral; padding: 10px; margin: 10px 0;">';
+            echo safeOutput($error);
             echo '</div>';
         }
         
-        echo '<h2>POST-форма (сообщение)</h2>';
+        echo '<h2>Форма входа</h2>';
         echo '<form method="POST">';
-        echo '<label>Сообщение: ';
-        echo '<input type="text" name="message" value="' . safeOutput($message) . '">';
-        echo '</label>';
-        echo '<button type="submit">Отправить</button>';
+        echo '<label>Email: ';
+        echo '<input type="email" name="email" value="' . safeOutput($email) . '" required>';
+        echo '</label><br>';
+        echo '<label>Пароль: ';
+        echo '<input type="password" name="password" required>';
+        echo '</label><br>';
+        echo '<button type="submit">Войти</button>';
         echo '</form>';
     }
-
-    function wellcomeForm($email): void {
-        echo "<h2>Здравствуйте, {$email}</h2>";
-        echo '<button type="submit", name="exit">Выход</button>';
+    
+    /**
+     * Отображение приветствия авторизованного пользователя
+     *
+     * @param string $email Email пользователя
+     * @return void
+     */
+    function welcomeForm(string $email): void
+    {
+        echo '<div style="background: lightgreen; padding: 10px; margin: 10px 0;">';
+        echo "<h2>Здравствуйте, " . safeOutput($email) . "</h2>";
+        echo '<form method="POST">';
+        echo '<button type="submit" name="exit">Выход</button>';
+        echo '</form>';
+        echo '</div>';
 
         if (isset($_POST['exit'])) {
-            exitFromWellcom();
+            session_destroy();
+            header('Location: ' . $_SERVER['PHP_SELF']);
+            exit();
         }
-    }
-
-    function exitFromWellcom(): void {
-        session_destroy();
-        authForm();
     }
 }
 
-$auth = new Auth();
-$auth -> authForm();
 
+// ============================================================================
+// Демонстрация работы (закомментированный блок)
+// ============================================================================
+
+// Задание 1: Анализ HTTP-запроса
+// dumpRequestInfo();
+
+// Задание 2: Работа с суперглобальными массивами
+// print_r(getRequestData());
+
+// Задание 3: Обработка GET- и POST-форм
+// processSearchForm();
+// processMessageForm();
+
+// Задание 4: Cookies
+// setThemeCookie('dark');
+// echo "Текущая тема: " . getTheme();
+
+// Задание 5: Сессии
+// $session = new SessionBag();
+// $session->set('username', 'Ivan');
+// echo $session->get('username');
+// $session->remove('username');
+
+// Задание 6: Валидация
+// var_dump(validateEmail('test@example.com'));
+// echo safeOutput('<script>alert("XSS")</script>');
+
+// Задание 7: Гостевая книга с CSRF
+// guestForm();
+
+// Задание 10: Корзина товаров
+// $cart = new ShoppingCart();
+// $cart->addItem(['id' => 1, 'name' => 'Товар 1', 'price' => 100]);
+// print_r($cart->getItems());
+// $cart->clear();
+
+// Задание 11: Авторизация
+$auth = new Auth();
+$auth->authForm();
