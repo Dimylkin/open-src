@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-// Настройка режима работы
 define('IS_DEVELOPMENT', true);
 
 if (IS_DEVELOPMENT) {
@@ -56,13 +55,11 @@ function getPdoConnection(): PDO
         return $pdo;
     } catch (PDOException $e) {
         if (IS_DEVELOPMENT) {
-            // Режим разработки: подробная информация
             die("<h3>Database Connection Error</h3>" .
                 "<p><strong>Message:</strong> " . htmlspecialchars($e->getMessage()) . "</p>" .
                 "<p><strong>Code:</strong> " . $e->getCode() . "</p>" .
                 "<p><strong>File:</strong> " . $e->getFile() . ":" . $e->getLine() . "</p>");
         } else {
-            // Режим продакшен: логирование
             error_log(sprintf(
                 "DB Connection Error: %s in %s:%d",
                 $e->getMessage(),
@@ -194,7 +191,6 @@ function transferStock(PDO $pdo, int $fromId, int $toId, int $amount): void
     try {
         $pdo->beginTransaction();
         
-        // Используем подготовленные запросы
         $stmt1 = $pdo->prepare("UPDATE books SET available = available - :amount WHERE id = :id");
         $stmt1->execute(['amount' => $amount, 'id' => $fromId]);
         
@@ -209,15 +205,13 @@ function transferStock(PDO $pdo, int $fromId, int $toId, int $amount): void
 }
 
 // ============================================================================
-// Демонстрация работы (закомментированный блок)
+// Демонстрация работы
 // ============================================================================
 
-// Инициализация подключения
 $pdo = getPdoConnection();
 
 echo "<h2>Демонстрация работы с базой данных</h2>";
 
-// Задание 2: Добавление книг
 echo "<h3>Задание 2: Добавление книг</h3>";
 $bulg = addBook($pdo, "Мастер и Маргарита", "М. Булгаков", "978-5-389-07412-7", 2020);
 $tolstoy = addBook($pdo, "Война и мир", "Л. Толстой", "978-5-17-098561-4", 2019);
@@ -227,7 +221,6 @@ $gogol = addBook($pdo, "Мертвые души", "Н. Гоголь", "978-5-389
 
 echo "<p>Добавлены книги с ID: " . htmlspecialchars("$bulg, $tolstoy, $dostoevsky, $pushkin, $gogol") . "</p>";
 
-// Задание 3: Поиск книг по автору
 echo "<h3>Задание 3: Поиск книг по автору</h3>";
 $bulgakovBooks = findBooksByAuthor($pdo, "М. Булгаков");
 echo "<p>Найдено книг М. Булгакова: " . count($bulgakovBooks) . "</p>";
@@ -237,7 +230,6 @@ foreach ($bulgakovBooks as $book) {
 }
 echo "</ul>";
 
-// Задание 4: Получение всех доступных книг
 echo "<h3>Задание 4: Все доступные книги</h3>";
 $availableBooks = getAllAvailableBooks($pdo);
 echo "<p>Всего доступных книг: " . count($availableBooks) . "</p>";
@@ -247,7 +239,6 @@ foreach ($availableBooks as $book) {
 }
 echo "</ul>";
 
-// Задание 5: Получение информации о книге
 echo "<h3>Задание 5: Информация о книге с ID 1</h3>";
 $book = getBookById($pdo, 1);
 if ($book) {
@@ -260,14 +251,12 @@ if ($book) {
     echo "<p>Книга не найдена</p>";
 }
 
-// Задание 6: Обновление доступности
 echo "<h3>Задание 6: Изменение доступности книги</h3>";
 echo "<p>Доступность книги с ID 1 до изменения: " . (getBookById($pdo, 1)['available'] ? 'Да' : 'Нет') . "</p>";
 setBookAvailability($pdo, 1, false);
 echo "<p>Доступность книги с ID 1 после изменения: " . (getBookById($pdo, 1)['available'] ? 'Да' : 'Нет') . "</p>";
-setBookAvailability($pdo, 1, true); // Возвращаем обратно
+setBookAvailability($pdo, 1, true);
 
-// Задание 7: Транзакции
 echo "<h3>Задание 7: Транзакция переноса количества</h3>";
 $book1Before = getBookById($pdo, 1);
 $book2Before = getBookById($pdo, 2);
@@ -284,13 +273,11 @@ try {
     echo "<p style='color: red;'>Ошибка транзакции: " . htmlspecialchars($e->getMessage()) . "</p>";
 }
 
-// Задание 8: Проверка защиты от SQL-инъекций
 echo "<h3>Задание 8: Защита от SQL-инъекций</h3>";
 $injectionTest = findBooksByAuthor($pdo, "' OR '1'='1");
 echo "<p>Результат поиска автора \"' OR '1'='1\": " . 
      (empty($injectionTest) ? "Пустой массив (защита работает)" : "Найдено книг: " . count($injectionTest)) . "</p>";
 
-// Задание 9: Обработка ошибок
 echo "<h3>Задание 9: Обработка ошибок</h3>";
 echo "<p>Режим работы: " . (IS_DEVELOPMENT ? "DEVELOPMENT (показывать ошибки)" : "PRODUCTION (логировать ошибки)") . "</p>";
 echo "<p>Для проверки обработки ошибок измените данные подключения на неверные.</p>";

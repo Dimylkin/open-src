@@ -37,7 +37,6 @@ function dumpRequestInfo(): void
     
     echo "<!DOCTYPE html>\n";
     echo "<html lang='ru'>\n";
-    echo "<head><meta charset='UTF-8'><title>HTTP Request Info</title></head>\n";
     echo "<body>\n";
     echo "<h2>Информация о запросе</h2>\n";
     echo "<p><strong>Метод:</strong> {$method}</p>\n";
@@ -465,7 +464,6 @@ class Auth
             }
         }
         
-        // Вывод формы входа
         if ($error !== '') {
             echo '<div style="background: lightcoral; padding: 10px; margin: 10px 0;">';
             echo safeOutput($error);
@@ -513,37 +511,43 @@ class Auth
 // ============================================================================
 
 // Задание 1: Анализ HTTP-запроса
-// dumpRequestInfo();
+dumpRequestInfo();
 
 // Задание 2: Работа с суперглобальными массивами
-// print_r(getRequestData());
+print_r(getRequestData());
 
 // Задание 3: Обработка GET- и POST-форм
-// processSearchForm();
-// processMessageForm();
+processSearchForm();
+processMessageForm();
 
 // Задание 4: Cookies
-// setThemeCookie('dark');
-// echo "Текущая тема: " . getTheme();
+setThemeCookie('dark');
+echo "Текущая тема: " . getTheme() . "<br>\n";
 
 // Задание 5: Сессии
-// $session = new SessionBag();
-// $session->set('username', 'Ivan');
-// echo $session->get('username');
-// $session->remove('username');
+$session = new SessionBag();
+echo "Имя:" . $session -> get('username');
+echo "<br>\n";
+$session->set('username', 'Ivan');
+echo "Имя:" . $session->get('username');
+echo "<br>\n";
+$session->remove('username');
+echo "Имя:" . $session -> get('username');
+echo "<br>\n";
 
 // Задание 6: Валидация
-// var_dump(validateEmail('test@example.com'));
-// echo safeOutput('<script>alert("XSS")</script>');
+var_dump("Валидность почты test@example.com:" . validateEmail('test@example.com'));
+echo "<br>\n";
+echo "Вывод:" . safeOutput('<script>alert("XSS")</script>');
 
 // Задание 7: Гостевая книга с CSRF
-// guestForm();
+guestForm();
 
 // Задание 10: Корзина товаров
-// $cart = new ShoppingCart();
-// $cart->addItem(['id' => 1, 'name' => 'Товар 1', 'price' => 100]);
-// print_r($cart->getItems());
-// $cart->clear();
+$cart = new ShoppingCart();
+$cart->addItem(['id' => 1, 'name' => 'Товар 1', 'price' => 100]);
+print_r($cart->getItems());
+$cart->clear();
 
 // Задание 11: Авторизация
 $auth = new Auth();
