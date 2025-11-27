@@ -138,7 +138,7 @@ class InvoicePdf extends FPDF {
         $this->Ln(8);
         $this->SetTextColor(0, 0, 255);
         $this->SetFont('Arial', 'U', 10);
-        $this->Cell(0, 5, 'Look', 0, 1, 'C', false, 'https://example.com');
+        $this->Cell(0, 5, 'Look my GitHub', 0, 1, 'C', false, 'https://github.com/Dimylkin/open-src/blob/master/practical_work_11/graphics_pdf_basics.php');
         $this->SetTextColor(0, 0, 0);
     }
 
@@ -164,6 +164,49 @@ class InvoicePdf extends FPDF {
         }
         $this->Output();
     }
+}
+
+if ($_GET['type'] ?? null === 'badge') {
+    renderBadge($_GET['name'] ?? '');
+} else {
+    renderInvoicePdf();
+}
+
+function renderBadge(string $name): void {
+    if (!preg_match('/^[A-Za-zА-Яа-яЁё\s]{2,50}$/u', $name)) {
+        die("Имя должно содержать только буквы, пробелы и длину от 2 до 50 символов!");
+    }
+
+    renderButton('', "/var/www/html/sustavov/practical_work_11/image/user_ivan.png");
+
+    getCachedImageOrGenerate(
+        '/var/www/html/sustavov/practical_work_11/cache',
+        'user_ivan',
+        function() {
+            $image = imagecreatetruecolor(200, 200);
+            $white = imagecolorallocate($image, 255, 255, 255);
+            imagefill($image, 0, 0, $white);
+            
+            $black = imagecolorallocate($image, 0, 0, 0);
+            imagefilledrectangle($image, 50, 50, 150, 150, $black);
+            
+            return $image;
+        }
+    );
+}
+
+function renderInvoicePdf(): void {
+    $mypdf = new InvoicePdf();
+    $header = ["Name", "Count", "Price"];
+    $product = [
+        ['Banana', '20', '2000'],
+        ['Apple', '150', '100'],
+        ['Milk', '200', '50'],
+        ['Chips', '1', '1000'],
+        ['Chocolate', '1000', '1']
+    ];
+
+    $mypdf -> buildTable($header, $product);
 }
 
 // renderBlackSquare();
