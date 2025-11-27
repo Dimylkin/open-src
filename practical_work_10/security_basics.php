@@ -20,12 +20,14 @@ function validateEmailFromPost(string $fieldName): ?string
  * Валидация имени пользователя
  *
  * @param string $name Имя пользователя
- * @return bool Возвращает true, если имя корректно, иначе false
+ * @return string|null Возвращает имя, если оно корректно, иначе null
  */
-function validateName(string $name): bool
+function validateName(string $name): ?string
 {
-    // Проверяем, что имя содержит только буквы и пробелы, длина 2-50 символов
-    return (bool) preg_match('/^[A-Za-zА-Яа-я\s]{2,50}$/u', $name);
+    if (preg_match('/^[A-Za-zА-Яа-я\s]{2,50}$/u', $name)) {
+        return $name;
+    }
+    return null;
 }
 
 /**
@@ -178,7 +180,6 @@ function saveUploadedFile(array $file, string $uploadDir): ?string
         return null;
     }
 
-    // Возвращаем путь относительно корня проекта
     return ltrim(str_replace(dirname(__DIR__), '', $destination), DIRECTORY_SEPARATOR);
 }
 
@@ -228,7 +229,7 @@ class Form
             if (validateEmailFromPost('email') === null) {
                 $errors[] = 'Некорректный email.';
             }
-            if (!validateName($name)) {
+            if (validateName($name) === null) {
                 $errors[] = 'Некорректное имя.';
             }
             if (validateAge((int) $age) === null) {
@@ -246,7 +247,7 @@ class Form
             }
 
             if (empty($errors)) {
-                $uploadDir = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'uploads';
+                $uploadDir = dirname(__DIR__, 4) . DIRECTORY_SEPARATOR . 'uploads';
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0755, true);
                 }
@@ -303,7 +304,7 @@ class Form
             <p><strong>Имя:</strong> ' . escapeHtml($_SESSION['name']) . '</p>
             <p><strong>Возраст:</strong> ' . escapeHtml($_SESSION['age']) . '</p>
             <p><strong>Аватар:</strong><br />
-            <img src="../uploads/' . escapeHtml(basename($_SESSION['avatar'])) . '" alt="Аватар" style="max-width: 200px;" />
+            <img src="/uploads/' . escapeHtml(basename($_SESSION['avatar'])) . '" alt="Аватар" style="max-width: 200px;" />
             </p></body></html>';
     }
 }

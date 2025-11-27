@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-define('IS_DEVELOPMENT', true);
+define('IS_DEVELOPMENT', false);
 
 if (IS_DEVELOPMENT) {
     error_reporting(E_ALL);
@@ -44,7 +44,7 @@ function getPdoConnection(): PDO
     try {
         $pdo = new PDO(
             "mysql:host=localhost;dbname=library;charset=utf8mb4",
-            'bd',
+            'uncorrect',
             '123',
             [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -212,32 +212,32 @@ $pdo = getPdoConnection();
 
 echo "<h2>Демонстрация работы с базой данных</h2>";
 
-echo "<h3>Задание 2: Добавление книг</h3>";
-$bulg = addBook($pdo, "Мастер и Маргарита", "М. Булгаков", "978-5-389-07412-7", 2020);
-$tolstoy = addBook($pdo, "Война и мир", "Л. Толстой", "978-5-17-098561-4", 2019);
-$dostoevsky = addBook($pdo, "Преступление и наказание", "Ф. Достоевский", "978-5-699-89547-3", 2018);
-$pushkin = addBook($pdo, "Евгений Онегин", "А. Пушкин", "978-5-17-095234-0", 2021);
-$gogol = addBook($pdo, "Мертвые души", "Н. Гоголь", "978-5-389-14523-8", 2022);
+// echo "<h3>Задание 2: Добавление книг</h3>";
+// $bulg = addBook($pdo, "Мастер и Маргарита", "М. Булгаков", "978-5-389-07412-7", 2020);
+// $tolstoy = addBook($pdo, "Война и мир", "Л. Толстой", "978-5-17-098561-4", 2019);
+// $dostoevsky = addBook($pdo, "Преступление и наказание", "Ф. Достоевский", "978-5-699-89547-3", 2018);
+// $pushkin = addBook($pdo, "Евгений Онегин", "А. Пушкин", "978-5-17-095234-0", 2021);
+// $gogol = addBook($pdo, "Мертвые души", "Н. Гоголь", "978-5-389-14523-8", 2022);
 
-echo "<p>Добавлены книги с ID: " . htmlspecialchars("$bulg, $tolstoy, $dostoevsky, $pushkin, $gogol") . "</p>";
+// echo "<p>Добавлены книги с ID: " . htmlspecialchars("$bulg, $tolstoy, $dostoevsky, $pushkin, $gogol") . "</p>";
 
-echo "<h3>Задание 3: Поиск книг по автору</h3>";
-$bulgakovBooks = findBooksByAuthor($pdo, "М. Булгаков");
-echo "<p>Найдено книг М. Булгакова: " . count($bulgakovBooks) . "</p>";
-echo "<ul>";
-foreach ($bulgakovBooks as $book) {
-    echo "<li>" . htmlspecialchars($book['title']) . " (ISBN: " . htmlspecialchars($book['isbn']) . ")</li>";
-}
-echo "</ul>";
+// echo "<h3>Задание 3: Поиск книг по автору</h3>";
+// $bulgakovBooks = findBooksByAuthor($pdo, "М. Булгаков");
+// echo "<p>Найдено книг М. Булгакова: " . count($bulgakovBooks) . "</p>";
+// echo "<ul>";
+// foreach ($bulgakovBooks as $book) {
+//     echo "<li>" . htmlspecialchars($book['title']) . " (ISBN: " . htmlspecialchars($book['isbn']) . ")</li>";
+// }
+// echo "</ul>";
 
-echo "<h3>Задание 4: Все доступные книги</h3>";
-$availableBooks = getAllAvailableBooks($pdo);
-echo "<p>Всего доступных книг: " . count($availableBooks) . "</p>";
-echo "<ul>";
-foreach ($availableBooks as $book) {
-    echo "<li>" . htmlspecialchars($book['title']) . " - " . htmlspecialchars($book['author']) . "</li>";
-}
-echo "</ul>";
+// echo "<h3>Задание 4: Все доступные книги</h3>";
+// $availableBooks = getAllAvailableBooks($pdo);
+// echo "<p>Всего доступных книг: " . count($availableBooks) . "</p>";
+// echo "<ul>";
+// foreach ($availableBooks as $book) {
+//     echo "<li>" . htmlspecialchars($book['title']) . " - " . htmlspecialchars($book['author']) . "</li>";
+// }
+// echo "</ul>";
 
 echo "<h3>Задание 5: Информация о книге с ID 1</h3>";
 $book = getBookById($pdo, 1);
@@ -251,36 +251,36 @@ if ($book) {
     echo "<p>Книга не найдена</p>";
 }
 
-echo "<h3>Задание 6: Изменение доступности книги</h3>";
-echo "<p>Доступность книги с ID 1 до изменения: " . (getBookById($pdo, 1)['available'] ? 'Да' : 'Нет') . "</p>";
-setBookAvailability($pdo, 1, false);
-echo "<p>Доступность книги с ID 1 после изменения: " . (getBookById($pdo, 1)['available'] ? 'Да' : 'Нет') . "</p>";
-setBookAvailability($pdo, 1, true);
+// echo "<h3>Задание 6: Изменение доступности книги</h3>";
+// echo "<p>Доступность книги с ID 1 до изменения: " . (getBookById($pdo, 1)['available'] ? 'Да' : 'Нет') . "</p>";
+// setBookAvailability($pdo, 1, false);
+// echo "<p>Доступность книги с ID 1 после изменения: " . (getBookById($pdo, 1)['available'] ? 'Да' : 'Нет') . "</p>";
+// setBookAvailability($pdo, 1, true);
 
-echo "<h3>Задание 7: Транзакция переноса количества</h3>";
-$book1Before = getBookById($pdo, 1);
-$book2Before = getBookById($pdo, 2);
-echo "<p>Книга 1 (available) до: " . htmlspecialchars((string)$book1Before['available']) . "</p>";
-echo "<p>Книга 2 (available) до: " . htmlspecialchars((string)$book2Before['available']) . "</p>";
+// echo "<h3>Задание 7: Транзакция переноса количества</h3>";
+// $book1Before = getBookById($pdo, 1);
+// $book2Before = getBookById($pdo, 2);
+// echo "<p>Книга 1 (available) до: " . htmlspecialchars((string)$book1Before['available']) . "</p>";
+// echo "<p>Книга 2 (available) до: " . htmlspecialchars((string)$book2Before['available']) . "</p>";
 
-try {
-    transferStock($pdo, 1, 2, 5);
-    $book1After = getBookById($pdo, 1);
-    $book2After = getBookById($pdo, 2);
-    echo "<p>Книга 1 (available) после: " . htmlspecialchars((string)$book1After['available']) . "</p>";
-    echo "<p>Книга 2 (available) после: " . htmlspecialchars((string)$book2After['available']) . "</p>";
-} catch (Exception $e) {
-    echo "<p style='color: red;'>Ошибка транзакции: " . htmlspecialchars($e->getMessage()) . "</p>";
-}
+// try {
+//     transferStock($pdo, 1, 2, 5);
+//     $book1After = getBookById($pdo, 1);
+//     $book2After = getBookById($pdo, 2);
+//     echo "<p>Книга 1 (available) после: " . htmlspecialchars((string)$book1After['available']) . "</p>";
+//     echo "<p>Книга 2 (available) после: " . htmlspecialchars((string)$book2After['available']) . "</p>";
+// } catch (Exception $e) {
+//     echo "<p style='color: red;'>Ошибка транзакции: " . htmlspecialchars($e->getMessage()) . "</p>";
+// }
 
-echo "<h3>Задание 8: Защита от SQL-инъекций</h3>";
-$injectionTest = findBooksByAuthor($pdo, "' OR '1'='1");
-echo "<p>Результат поиска автора \"' OR '1'='1\": " . 
-     (empty($injectionTest) ? "Пустой массив (защита работает)" : "Найдено книг: " . count($injectionTest)) . "</p>";
+// echo "<h3>Задание 8: Защита от SQL-инъекций</h3>";
+// $injectionTest = findBooksByAuthor($pdo, "' OR '1'='1");
+// echo "<p>Результат поиска автора \"' OR '1'='1\": " . 
+//      (empty($injectionTest) ? "Пустой массив (защита работает)" : "Найдено книг: " . count($injectionTest)) . "</p>";
 
-echo "<h3>Задание 9: Обработка ошибок</h3>";
-echo "<p>Режим работы: " . (IS_DEVELOPMENT ? "DEVELOPMENT (показывать ошибки)" : "PRODUCTION (логировать ошибки)") . "</p>";
-echo "<p>Для проверки обработки ошибок измените данные подключения на неверные.</p>";
+// echo "<h3>Задание 9: Обработка ошибок</h3>";
+// echo "<p>Режим работы: " . (IS_DEVELOPMENT ? "DEVELOPMENT (показывать ошибки)" : "PRODUCTION (логировать ошибки)") . "</p>";
+// echo "<p>Для проверки обработки ошибок измените данные подключения на неверные.</p>";
 
-echo "<hr>";
-echo "<p><strong>Все задания выполнены успешно!</strong></p>";
+// echo "<hr>";
+// echo "<p><strong>Все задания выполнены успешно!</strong></p>";
